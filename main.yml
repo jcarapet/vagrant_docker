@@ -1,0 +1,20 @@
+---
+#installing base kernel stuff for docker
+- hosts: all
+  sudo: yes
+  tasks:
+  - name: make fake test directory
+    file: path=/home/vagrant/foobar_test state=directory
+  - name: perform apt-get update
+    apt: update_cache=yes  
+  - name: install the first piece
+    apt: name=linux-image-generic-lts-raring state=present
+  - name: update the second piece 
+    apt: name=linux-headers-generic-lts-raring state=present
+  - name: install the apt_key
+    apt_key: url="https://get.docker.io/gpg" id="A88D21E9"
+  - name: Add Docker repository
+    apt_repository: repo='deb http://get.docker.io/ubuntu docker main' update_cache=yes
+
+  - name: Install Docker
+    apt: pkg=lxc-docker
