@@ -18,3 +18,6 @@
 
   - name: Install Docker
     apt: pkg=lxc-docker
+
+  - name: put in Dockerfile template
+    template: src=templates/Dockerfile.j2 dest=/home/vagrant/foobar_test/Dockerfile
