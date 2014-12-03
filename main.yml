@@ -3,8 +3,6 @@
 - hosts: all
   sudo: yes
   tasks:
-  - name: make fake test directory
-    file: path=/home/vagrant/foobar_test state=directory
   - name: perform apt-get update
     apt: update_cache=yes  
   - name: install the first piece
@@ -18,6 +16,18 @@
 
   - name: Install Docker
     apt: pkg=lxc-docker
-
+  - name: make fake test directory
+    file: path=/home/vagrant/docker_jenkins state=directory
+  - name: install import container shell
+    template: src=templates/import_container.sh.j2 dest=/home/vagrant/docker_jenkins/import_container.sh 
   - name: put in Dockerfile template
-    template: src=templates/Dockerfile.j2 dest=/home/vagrant/foobar_test/Dockerfile
+    template: src=templates/Dockerfile.j2 dest=/home/vagrant/docker_jenkins/Dockerfile
+  - name: create nexus container directory
+    file: path=/home/vagrant/docker_nexus state=directory
+  - name: create nexus Dockerfile
+    template: src=templates/Dockerfile_nexus.j2 dest=/home/vagrant/docker_nexus/Dockerfile  
+
+  - name: initialize docker in that directory to download
+    shell: sudo docker build . chdir=/home/vagrant/docker_jenkins/
+  - name: initialize nexus docker download
+    shell: sudo docker build . chdir=/home/vagrnat/docker_nexus
